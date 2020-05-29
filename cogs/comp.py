@@ -13,6 +13,51 @@ class Comp(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
   
+  @commands.command(aliases=["avg"])
+  async def avgcalculator(self,ctx,time1,time2,time3,time4,time5):
+    def get_sec(time_str):
+      count=time_str.count(":")
+      if count==1:
+        m, s = time_str.split(':')
+        secs= float(m) * 60 + float(s)
+        return round(secs,2)
+      elif count==2:
+        h, m, s = time_str.split(':')
+        secs= float(h) * 3600 + float(m) * 60 + float(s)
+        return round(secs,2)
+      elif count==0:
+        s=float(time_str)
+        return round(s,2)
+
+    def convert(seconds): 
+      minutes =seconds/60
+      for i in range(60):
+        if minutes>i and minutes<i+1:
+          minutes=i
+      secs=round((seconds % 60),2)
+      if minutes==0:
+        time="{}".format(round(secs,2))
+      else:
+        if secs <10:
+          secs="0{}".format(round(secs,2))
+        time=f"{minutes}:{secs}"
+      return time
+
+    times=[time1,time2,time3,time4,time5]
+    timelist=[]
+    for item in times:
+      try:
+        stime=get_sec(item)
+        timelist.append(stime)
+      except ValueError:
+        await ctx.send(f"{item} is not a valid time!")
+        return
+    
+    timelist.sort()
+    avg=timelist[1]+timelist[2]+timelist[3]
+    avg5=avg/3
+    avg5=convert(avg5)
+    await ctx.send(f"Your average is {avg5}!")
 
   @commands.command()
   async def ping(self,ctx):
