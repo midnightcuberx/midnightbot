@@ -57,49 +57,7 @@ class Setup(commands.Cog):
       collection.insert_one({"_id":guild.id,"3x3":{"mode":"on"},"4x4":{"mode":"on"},"2x2":{"mode":"on"},"5x5":{"mode":"on"},"6x6":{"mode":"on"},"7x7":{"mode":"on"},"square-1":{"mode":"on"},"skewb":{"mode":"on"},"clock":{"mode":"on"},"pyraminx":{"mode":"on"},"oh":{"mode":"on"},"megaminx":{"mode":"on"},"3bld":{"mode":"on"},"4bld":{"mode":"on"},"5bld":{"mode":"on"}})
 
 
-  @commands.command()
-  async def resetrecord(self,ctx,event=None,sora=None):
-    if not event:
-      await ctx.send("You must enter a valid event!")
-      return
-    if not sora:
-      await ctx.send("You must tell me if you want to reset a single or average!")
-      return
-    sora=sora.lower()
-    event=event.lower()
-    if event=="pyra":
-      event="pyraminx"
-    elif event=="skweeb":
-      event="skewb"
-    elif event=="sq1" or event.lower()=="squan":
-      event="square-1"
-    elif event=="mega":
-      event="megaminx"
-    elif event=="cloncc":
-      event="clock"
 
-    elif sora!="average" and sora!="single":
-      await ctx.send("Please enter single or average!")
-      return
-    collection=db["records"]
-    userlist={}
-    results=collection.find({"_id":ctx.guild.id})
-    for result in results:
-      records=result
-    try:
-      eventresults=records[event]
-    except KeyError:
-      await ctx.send("Sorry that is not a valid event!")
-      return
-    for key in records[event]:
-      userlist[key]=records[event][key]
-    if sora=="single":
-      userlist[sora]="Nobody with a single of None"
-    else:
-      userlist[sora]="Nobody with an average of None"
-    collection.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})
-
-    await ctx.send(f"Successfully reset {event} {sora} to None")
     
 
 
