@@ -13,7 +13,54 @@ collection=db["config"]
 class Config(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
+  @commands.command()
+  @commands.has_permissions(manage_messages=True)
+  async def resetrecord(self,ctx,event=None,sora=None):
+    if not event:
+      await ctx.send("You must enter a valid event!")
+      return
+    if not sora:
+      await ctx.send("You must tell me if you want to reset a single or average!")
+      return
+    sora=sora.lower()
+    event=event.lower()
+    if event=="pyra":
+      event="pyraminx"
+    elif event=="skweeb":
+      event="skewb"
+    elif event=="sq1" or event.lower()=="squan":
+      event="square-1"
+    elif event=="mega":
+      event="megaminx"
+    elif event=="cloncc":
+      event="clock"
 
+    elif sora!="average" and sora!="single":
+      await ctx.send("Please enter single or average!")
+      return
+    collection=db["records"]
+    userlist={}
+    results=collection.find({"_id":ctx.guild.id})
+    for result in results:
+      records=result
+    try:
+      eventresults=records[event]
+    except KeyError:
+      await ctx.send("Sorry that is not a valid event!")
+      return
+    for key in records[event]:
+      userlist[key]=records[event][key]
+    if sora=="single":
+      userlist[sora]="Nobody with a single of None"
+    else:
+      userlist[sora]="Nobody with an average of None"
+    collection.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})
+
+    await ctx.send(f"Successfully reset {event} {sora} to None")
+  @resetrecord.error
+  async def resetrecord_error(self,ctx,error):
+    if isinstance(error,commands.MissingPermissions):
+      await ctx.send("Sorry You need manage messages permissions to use this command")
 
   @commands.command()
   async def bans(self,ctx):
