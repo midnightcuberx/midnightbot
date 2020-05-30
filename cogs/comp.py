@@ -81,7 +81,7 @@ class Comp(commands.Cog):
     results=collection.find({"_id":ctx.guild.id})
     for result in results:
       record=result
-    eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld"]
+    eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld","fmc"]
     eventson=[]
     for event in eventlist:
       onoff=db.config
@@ -241,7 +241,7 @@ class Comp(commands.Cog):
       event="megaminx"
     elif event=="cloncc":
       event="clock"
-    eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld"]
+    eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld","fmc"]
     eventson=[]
     for item in eventlist:
       onoff=db.config
@@ -364,7 +364,7 @@ class Comp(commands.Cog):
     results=collection.find({"_id":ctx.guild.id})
     for result in results:
       comp=result
-    eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld"]
+    eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld","fmc"]
     eventson=[]
     for event in eventlist:
       onoff=db.config
@@ -446,116 +446,221 @@ class Comp(commands.Cog):
     results=collection.find({"_id":ctx.guild.id})
     for result in results:
       comp=result
-    events=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld"]
+    events=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld","fmc"]
     for event in events:
       lblist={}
       users=[]
       lb_list=[]
       for key in comp[event]:
         users.append(key)
-      for user in users:
-        lblist[user]=comp[event][user]["average"]
-      print (lblist) 
-      for key,value in sorted(lblist.items(), key=lambda item: item[1]):
-        try:
-          value=convert(value)
-        except TypeError:
-          value=0
-        if value!=0:
-          string="<@%s> : %s" % (key,value)
-          lb_list.append(string)
-      listlen=len(lb_list)
-      listlen1=len(lb_list)
+      if event!= "3bld" and event !="4bld" and event != "5bld":
+        for user in users:
+          lblist[user]=comp[event][user]["average"]
+        print (lblist) 
+        for key,value in sorted(lblist.items(), key=lambda item: item[1]):
+          try:
+            value=convert(value)
+          except TypeError:
+            value=0
+          if value!=0:
+            string="<@%s> : %s" % (key,value)
+            lb_list.append(string)
+        listlen=len(lb_list)
+        listlen1=len(lb_list)
 
-      if listlen>3:
-        listlen=3
-      #extra
-      if len(lb_list)!=0:
-        bestuser,bestaverage=lb_list[0].split(" : ")
-
-        collrecords=db["records"]
-        results=collrecords.find({"_id":ctx.guild.id})
-        for result in results:
-          records=result
-
-        person,record=records[event]["average"].split(" - ")
-        bestaverage=get_sec(bestaverage)
-        if record=="None":
-          record=100000000000000000000000
-        try:
-          record=get_sec(record)
-        except AttributeError:
-          record=record
-        if bestaverage<record:
-          userlist={}
-          bestaverage=convert(bestaverage)
-          for key in records[event]:
-            userlist[key]=records[event][key]
-          userlist["average"]=f"{bestuser} - {bestaverage}"
-          collrecords.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})
-      lblist1={}
-      users1=[]
-      lb_list1=[]
-      for key in comp[event]:
-        users1.append(key)
-      for user in users1:
-        lblist1[user]=comp[event][user]["single"]
-      for key,value in sorted(lblist1.items(), key=lambda item: item[1]):
-        try:
-          value=convert(value)
-        except TypeError:
-          value=0
-        if value!=0:
-          string="<@%s> : %s" % (key,value)
-          lb_list1.append(string)
-      listlen11=len(lb_list1)
-      listlen111=len(lb_list1)
-      if len(lb_list1)!=0:
-        bestuser,bestsingle=lb_list1[0].split(" : ")
-
-        collrecords=db["records"]
-        results=collrecords.find({"_id":ctx.guild.id})
-        for result in results:
-          records=result
-
-        person,record=records[event]["single"].split(" - ")
-        bestsingle=get_sec(bestsingle)
-        if record=="None":
-          record=100000000000000000000000
-        try:
-          record=get_sec(record)
-        except AttributeError:
-          record=record
-        if bestsingle<record:
-          userlist={}
-          bestsingle=convert(bestsingle)
-          for key in records[event]:
-            userlist[key]=records[event][key]
-          userlist["single"]=f"{bestuser} - {bestsingle}"
-          collrecords.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})  
-      #extra end
-      onemessage=[]
-      if listlen>0:
-        onemessage.append(f"{event.capitalize()} podium:")
-      for i in range(listlen1-1):
+        if listlen>3:
+          listlen=3
+        #extra
         if len(lb_list)!=0:
-          user,average=lb_list[i].split(" : ")
-          user2,average2=lb_list[i+1].split(" : ")
-          stuff,user1=user.split("@")
-          user3,stuf2f=user1.split(">")
-          stuff2,user6=user2.split("@")
-          user4,studd4=user6.split(">")
-          averagelist={}
-          averagelist[user]=average
-          averagelist[user2]=average2
-          if averagelist[user]==averagelist[user2]:
-            usersingle=comp[event][user3]["single"]
-            user2single=comp[event][user4]["single"]
-            useravg=comp[event][user3]["average"]
-            user2avg=comp[event][user4]["average"]
-            if usersingle>user2single:
-              lb_list[i]=f"{user2} : {user2avg}"
-              lb_list[i+1]=f"{user} : {useravg}"
+          bestuser,bestaverage=lb_list[0].split(" : ")
+
+          collrecords=db["records"]
+          results=collrecords.find({"_id":ctx.guild.id})
+          for result in results:
+            records=result
+
+          person,record=records[event]["average"].split(" - ")
+          bestaverage=get_sec(bestaverage)
+          if record=="None":
+            record=100000000000000000000000
+          try:
+            record=get_sec(record)
+          except AttributeError:
+            record=record
+          if bestaverage<record:
+            userlist={}
+            bestaverage=convert(bestaverage)
+            for key in records[event]:
+              userlist[key]=records[event][key]
+            userlist["average"]=f"{bestuser} - {bestaverage}"
+            collrecords.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})
+        lblist1={}
+        users1=[]
+        lb_list1=[]
+        for key in comp[event]:
+          users1.append(key)
+        for user in users1:
+          lblist1[user]=comp[event][user]["single"]
+        for key,value in sorted(lblist1.items(), key=lambda item: item[1]):
+          try:
+            value=convert(value)
+          except TypeError:
+            value=0
+          if value!=0:
+            string="<@%s> : %s" % (key,value)
+            lb_list1.append(string)
+        listlen11=len(lb_list1)
+        listlen111=len(lb_list1)
+        if len(lb_list1)!=0:
+          bestuser,bestsingle=lb_list1[0].split(" : ")
+
+          collrecords=db["records"]
+          results=collrecords.find({"_id":ctx.guild.id})
+          for result in results:
+            records=result
+
+          person,record=records[event]["single"].split(" - ")
+          bestsingle=get_sec(bestsingle)
+          if record=="None":
+            record=100000000000000000000000
+          try:
+            record=get_sec(record)
+          except AttributeError:
+            record=record
+          if bestsingle<record:
+            userlist={}
+            bestsingle=convert(bestsingle)
+            for key in records[event]:
+              userlist[key]=records[event][key]
+            userlist["single"]=f"{bestuser} - {bestsingle}"
+            collrecords.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})  
+        #extra end
+        onemessage=[]
+        if listlen>0:
+          onemessage.append(f"{event.capitalize()} podium:")
+        for i in range(listlen1-1):
+          if len(lb_list)!=0:
+            user,average=lb_list[i].split(" : ")
+            user2,average2=lb_list[i+1].split(" : ")
+            stuff,user1=user.split("@")
+            user3,stuf2f=user1.split(">")
+            stuff2,user6=user2.split("@")
+            user4,studd4=user6.split(">")
+            averagelist={}
+            averagelist[user]=average
+            averagelist[user2]=average2
+            if averagelist[user]==averagelist[user2]:
+              usersingle=comp[event][user3]["single"]
+              user2single=comp[event][user4]["single"]
+              useravg=comp[event][user3]["average"]
+              user2avg=comp[event][user4]["average"]
+              if usersingle>user2single:
+                lb_list[i]=f"{user2} : {user2avg}"
+                lb_list[i+1]=f"{user} : {useravg}"
+      else:
+        for user in users:
+          lblist[user]=comp[event][user]["single"]
+        print (lblist) 
+        for key,value in sorted(lblist.items(), key=lambda item: item[1]):
+          try:
+            value=convert(value)
+          except TypeError:
+            value=0
+          if value!=0:
+            string="<@%s> : %s" % (key,value)
+            lb_list.append(string)
+        listlen=len(lb_list)
+        listlen1=len(lb_list)
+
+        if listlen>3:
+          listlen=3
+        #extra
+        if len(lb_list)!=0:
+          bestuser,bestaverage=lb_list[0].split(" : ")
+
+          collrecords=db["records"]
+          results=collrecords.find({"_id":ctx.guild.id})
+          for result in results:
+            records=result
+
+          person,record=records[event]["single"].split(" - ")
+          bestaverage=get_sec(bestaverage)
+          if record=="None":
+            record=100000000000000000000000
+          try:
+            record=get_sec(record)
+          except AttributeError:
+            record=record
+          if bestaverage<record:
+            userlist={}
+            bestaverage=convert(bestaverage)
+            for key in records[event]:
+              userlist[key]=records[event][key]
+            userlist["single"]=f"{bestuser} - {bestaverage}"
+            collrecords.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})
+        lblist1={}
+        users1=[]
+        lb_list1=[]
+        for key in comp[event]:
+          users1.append(key)
+        for user in users1:
+          lblist1[user]=comp[event][user]["average"]
+        for key,value in sorted(lblist1.items(), key=lambda item: item[1]):
+          try:
+            value=convert(value)
+          except TypeError:
+            value=0
+          if value!=0:
+            string="<@%s> : %s" % (key,value)
+            lb_list1.append(string)
+        listlen11=len(lb_list1)
+        listlen111=len(lb_list1)
+        if len(lb_list1)!=0:
+          bestuser,bestsingle=lb_list1[0].split(" : ")
+
+          collrecords=db["records"]
+          results=collrecords.find({"_id":ctx.guild.id})
+          for result in results:
+            records=result
+
+          person,record=records[event]["average"].split(" - ")
+          bestsingle=get_sec(bestsingle)
+          if record=="None":
+            record=100000000000000000000000
+          try:
+            record=get_sec(record)
+          except AttributeError:
+            record=record
+          if bestsingle<record:
+            userlist={}
+            bestsingle=convert(bestsingle)
+            for key in records[event]:
+              userlist[key]=records[event][key]
+            userlist["average"]=f"{bestuser} - {bestsingle}"
+            collrecords.update_one({"_id":ctx.guild.id},{"$set":{event:userlist}})  
+        #extra end
+        onemessage=[]
+        if listlen>0:
+          onemessage.append(f"{event.capitalize()} podium:")
+        for i in range(listlen1-1):
+          if len(lb_list)!=0:
+            user,average=lb_list[i].split(" : ")
+            user2,average2=lb_list[i+1].split(" : ")
+            stuff,user1=user.split("@")
+            user3,stuf2f=user1.split(">")
+            stuff2,user6=user2.split("@")
+            user4,studd4=user6.split(">")
+            averagelist={}
+            averagelist[user]=average
+            averagelist[user2]=average2
+            if averagelist[user]==averagelist[user2]:
+              usersingle=comp[event][user3]["single"]
+              user2single=comp[event][user4]["single"]
+              useravg=comp[event][user3]["average"]
+              user2avg=comp[event][user4]["average"]
+              if usersingle>user2single:
+                lb_list[i]=f"{user2} : {user2avg}"
+                lb_list[i+1]=f"{user} : {useravg}"
       for i in range(listlen):
         user,average=lb_list[i].split(" : ")
         try:
@@ -610,7 +715,7 @@ class Comp(commands.Cog):
     print (winners)   
     for i in range(times):
       await ctx.send(winners[i])
-    collection.update_one({"_id":ctx.guild.id},{"$set":{"3x3":{},"4x4":{},"2x2":{},"5x5":{},"6x6":{},"7x7":{},"square-1":{},"skewb":{},"clock":{},"pyraminx":{},"oh":{},"megaminx":{},"3bld":{},"4bld":{},"5bld":{}}})
+    collection.update_one({"_id":ctx.guild.id},{"$set":{"3x3":{},"4x4":{},"2x2":{},"5x5":{},"6x6":{},"7x7":{},"square-1":{},"skewb":{},"clock":{},"pyraminx":{},"oh":{},"megaminx":{},"3bld":{},"4bld":{},"5bld":{},"fmc":{}}})
   
   @podiums.error
   async def podiums_error(self,ctx,error):
