@@ -230,7 +230,8 @@ class Comp(commands.Cog):
       return
     event=event.lower()
     eventson=[]
-    
+    single=single.upper()
+    average=average.upper()
     if event=="pyra":
       event="pyraminx"
     elif event=="skweeb":
@@ -282,20 +283,32 @@ class Comp(commands.Cog):
         single=get_sec(single)
       except ValueError:
         single=single
+        if single=="DNF":
+          oksingle=oksingle=100000000000000000000000
+        else:
+          await ctx.send(f"Your submitted time of {single} is invalid!")
+          return
     try:
       average=float(average)
     except ValueError:
       try:
         average=get_sec(average)
+
       except ValueError:
         average=average
+        if average=="DNF":
+          okaverage=100000000000000000000000
+        else:
+          await ctx.send(f"Your submitted time of {average} is invalid!")
+          return
     if single=="DNF":
       oksingle=100000000000000000000000
     else:
       oksingle=single
     if average=="DNF":
       okaverage=100000000000000000000000
-    else:okaverage=average
+    else:
+      okaverage=average
     if oksingle>okaverage:
       await ctx.send("Your submitted times are invalid because your average is faster than your single! Make sure you have submitted your results in the format +submit <event> <single> <average>!")
       return
@@ -454,7 +467,8 @@ class Comp(commands.Cog):
       for key in comp[event]:
         users.append(key)
       for user in users:
-        lblist[user]=comp[event][user]["average"]
+        if comp[event][user]["average"]!="DNF":
+          lblist[user]=comp[event][user]["average"]
       print (lblist) 
       for key,value in sorted(lblist.items(), key=lambda item: item[1]):
         try:
@@ -481,7 +495,7 @@ class Comp(commands.Cog):
         person,record=records[event]["average"].split(" - ")
         bestaverage=get_sec(bestaverage)
         if record=="None":
-          record=100000000000000000000000
+          record=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
         try:
           record=get_sec(record)
         except AttributeError:
@@ -499,7 +513,8 @@ class Comp(commands.Cog):
       for key in comp[event]:
         users1.append(key)
       for user in users1:
-        lblist1[user]=comp[event][user]["single"]
+        if comp[event][user]["single"]!="DNF":
+          lblist1[user]=comp[event][user]["single"]
       for key,value in sorted(lblist1.items(), key=lambda item: item[1]):
         try:
           value=convert(value)
@@ -521,7 +536,7 @@ class Comp(commands.Cog):
         person,record=records[event]["single"].split(" - ")
         bestsingle=get_sec(bestsingle)
         if record=="None":
-          record=100000000000000000000000
+          record=100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
         try:
           record=get_sec(record)
         except AttributeError:
@@ -596,7 +611,8 @@ class Comp(commands.Cog):
       for key in comp[event]:
         users.append(key)
       for user in users:
-        lblist[user]=comp[event][user]["single"]
+        if comp[event][user]["single"]!="DNF":
+          lblist[user]=comp[event][user]["single"]
       print (lblist) 
       for key,value in sorted(lblist.items(), key=lambda item: item[1]):
         try:
@@ -643,7 +659,8 @@ class Comp(commands.Cog):
       for key in comp[event]:
         users1.append(key)
       for user in users1:
-        lblist1[user]=comp[event][user]["average"]
+        if comp[event][user]["average"]!="DNF":
+          lblist1[user]=comp[event][user]["average"]
       for key,value in sorted(lblist1.items(), key=lambda item: item[1]):
         try:
           value=convert(value)
@@ -716,7 +733,10 @@ class Comp(commands.Cog):
         ok,user2=user.split("@")
         user1,test=user2.split(">")
         usersingle=comp[event][user1]["average"]
-        usersingle=convert(usersingle)
+        try:
+          usersingle=convert(usersingle)
+        except TypeError:
+          usersingle="DNF"
         if i==0:
           onemessage.append(f"1st place: {user} with a single of {average} and an average of {usersingle}")
           overall[user]+=3
