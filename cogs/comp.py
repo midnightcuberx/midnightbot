@@ -32,9 +32,7 @@ class Comp(commands.Cog):
     def convert(seconds): 
       minutes =seconds/60
       for i in range(60):
-        if minutes>i and minutes<i+1:
-          minutes=i
-        elif minutes==i:
+        if minutes>=i and minutes<i+1:
           minutes=i
       secs=round((seconds % 60),2)
       if minutes==0:
@@ -87,10 +85,9 @@ class Comp(commands.Cog):
     def convert(seconds):
         minutes =seconds/60
         for i in range(10000):
-          if minutes>i and minutes<i+1:
+          if minutes>=i and minutes<i+1:
             minutes=i
-          elif minutes==i:
-            minutes=i
+
             
         secs=round((seconds % 60),2)
         if minutes==0:
@@ -226,9 +223,7 @@ class Comp(commands.Cog):
     def convert(seconds): 
       minutes =seconds/60
       for i in range(10000):
-        if minutes>i and minutes<i+1:
-          minutes=i
-        elif minutes==i:
+        if minutes>=i and minutes<i+1:
           minutes=i
       secs=round((seconds % 60),2)
       if minutes==0:
@@ -388,10 +383,9 @@ class Comp(commands.Cog):
     def convert(seconds): 
         minutes =seconds/60
         for i in range(10000):
-          if minutes>i and minutes<i+1:
+          if minutes>=i and minutes<i+1:
             minutes=i
-          elif minutes==i:
-            minutes=i
+
         secs=round((seconds % 60),2)
         if minutes==0:
           time="{}".format(secs)
@@ -464,9 +458,7 @@ class Comp(commands.Cog):
     def convert(seconds): 
         minutes =seconds/60
         for i in range(10000):
-          if minutes>i and minutes<i+1:
-            minutes=i
-          elif minutes==i:
+          if minutes>=i and minutes<i+1:
             minutes=i
         secs=round((seconds % 60),2)
         if minutes==0:
