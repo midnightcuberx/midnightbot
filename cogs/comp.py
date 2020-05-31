@@ -14,7 +14,7 @@ class Comp(commands.Cog):
     self.bot = bot
   
   @commands.command(aliases=["avg"])
-  async def avgcalculator(self,ctx,time1,time2,time3,time4,time5):
+  async def avgcalculator(self,ctx,time1,time2,time3,time4=None,time5=None):
     def get_sec(time_str):
       count=time_str.count(":")
       if count==1:
@@ -44,8 +44,13 @@ class Comp(commands.Cog):
           secs="0{}".format(round(secs,2))
         time=f"{minutes}:{secs}"
       return time
-
-    times=[time1,time2,time3,time4,time5]
+    if time4 and time5:
+      times=[time1,time2,time3,time4,time5]
+    else:
+      times=[time1,time2,time3]
+    if time4 and not time5:
+      await ctx.send("You need to enter 3 or 5 times!")
+      return
     timelist=[]
     for item in times:
       try:
@@ -56,10 +61,23 @@ class Comp(commands.Cog):
         return
     
     timelist.sort()
-    avg=timelist[1]+timelist[2]+timelist[3]
-    avg5=avg/3
-    avg5=convert(avg5)
-    await ctx.send(f"Your average is {avg5}!")
+    print(timelist)
+    if len(timelist)==5:
+      avg=timelist[1]+timelist[2]+timelist[3]
+      avg5=avg/3
+      avg5=convert(avg5)
+      await ctx.send(f"Your average is {avg5}!")
+    elif len(timelist)==3:
+      avg=timelist[0]+timelist[1]+timelist[2]
+      avg5=avg/3
+      avg5=convert(avg5)
+      await ctx.send(f"Your mean is {avg5}!")
+
+  @avgcalculator.error
+  async def avgcalculator_error(self,ctx,error):
+    if isinstance(error,commands.MissingRequiredArgument):
+      await ctx.send("Please make sure you are entering 3 or 5 times!")
+
 
   @commands.command()
   async def ping(self,ctx):
