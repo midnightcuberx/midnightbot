@@ -12,7 +12,7 @@ collection=db["config"]
 
 
 
-class Comp(commands.Cog):
+class Compscrambles(commands.Cog):
   def __init__(self,bot):
     self.bot=bot
 
@@ -187,4 +187,4 @@ class Comp(commands.Cog):
 
 
 def setup(bot):
-  bot.add_cog(Comp(bot))
+  bot.add_cog(Compscrambles(bot))
