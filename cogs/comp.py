@@ -12,7 +12,12 @@ collection=db["results"]
 class Comp(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
-  
+  @commands.command()
+  @commands.has_permissions(manage_messages=True)
+  async def end(self,ctx):
+    coll=db["mode"]
+    coll.update_one({"_id":ctx.guild.id},{"$set":{"mode":"off"}})
+    await ctx.send("Successfully ended the weekly comp")
   @commands.command(aliases=["avg"])
   async def avgcalculator(self,ctx,time1,time2,time3,time4=None,time5=None):
     def get_sec(time_str):
@@ -175,7 +180,12 @@ class Comp(commands.Cog):
 
   @commands.command()
   async def submit(self,ctx,event=None,single=None,average=None):
-
+    coll=db["mode"]
+    compon=coll.find_one({"_id":ctx.guild.id})
+    mode=compon["mode"]
+    if mode=="off":
+      await ctx.send("There is no active comp in the server! The comps automatically start when you generate scrambles and end when you do podiums!")
+      return
     collban=db.bans
     results=collban.find({"_id":ctx.guild.id})
     for result in results:
@@ -430,6 +440,8 @@ class Comp(commands.Cog):
   @commands.command()
   @commands.has_permissions(manage_messages=True)
   async def podiums(self,ctx):
+    coll=db["mode"]
+    coll.update_one({"_id":ctx.guild.id},{"$set":{"mode":"off"}})
     overall={}
     def get_sec(time_str):
       count=time_str.count(":")
