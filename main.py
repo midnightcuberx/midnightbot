@@ -4,7 +4,7 @@ import pymongo
 import dns
 import os
 import json
-import keep_alive
+
 
 mongosecret=os.environ.get("mongosecret")
 client = pymongo.MongoClient(mongosecret)
@@ -40,6 +40,8 @@ async def on_guild_join(guild):
   db=client["comp"]
   collection=db["bans"]
   collection.insert_one({"_id":guild.id,"bans":{}})
+  collection=db["mode"]
+  collection.insert_one({"_id":guild.id,"mode":"off"})
 
 
 @bot.event
@@ -55,6 +57,8 @@ async def on_bot_remove(guild):
   db=client["comp"]
   collection=db.bans
   collection.delete_one({"_id":guild.id})
+  collection=db["mode"]
+  collection.insert_one({"_id":guild.id})
 
 
 
@@ -78,6 +82,6 @@ async def invite(ctx):
   await ctx.send("Use this to invite Midnight Scrambler to your server : https://discord.com/oauth2/authorize?client_id=694632046730936390&permissions=71680&scope=bot")
 
 
-keep_alive.keep_alive()
+
 token=os.environ.get("botsecret")
 bot.run(token)
