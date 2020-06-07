@@ -4,7 +4,7 @@ import pymongo
 import dns
 import os
 import json
-
+import keep_alive
 
 mongosecret=os.environ.get("mongosecret")
 client = pymongo.MongoClient(mongosecret)
@@ -36,12 +36,20 @@ async def on_guild_join(guild):
   collection.insert_one({"_id":guild.id,"3x3":{},"4x4":{},"2x2":{},"5x5":{},"6x6":{},"7x7":{},"square-1":{},"skewb":{},"clock":{},"pyraminx":{},"oh":{},"megaminx":{},"3bld":{},"4bld":{},"5bld":{}})
   db=client["comp"]
   collection=db["config"]
-  collection.insert_one({"_id":guild.id,"3x3":{"mode":"on"},"4x4":{"mode":"on"},"2x2":{"mode":"on"},"5x5":{"mode":"on"},"6x6":{"mode":"on"},"7x7":{"mode":"on"},"square-1":{"mode":"on"},"skewb":{"mode":"on"},"clock":{"mode":"on"},"pyraminx":{"mode":"on"},"oh":{"mode":"on"},"megaminx":{"mode":"on"},"3bld":{"mode":"on"},"4bld":{"mode":"on"},"5bld":{"mode":"on"}})
+  collection.insert_one({"_id":guild.id,"3x3":{"mode":"on"},"4x4":{"mode":"on"},"2x2":{"mode":"on"},"5x5":{"mode":"on"},"6x6":{"mode":"on"},"7x7":{"mode":"on"},"square-1":{"mode":"on"},"skewb":{"mode":"on"},"clock":{"mode":"on"},"pyraminx":{"mode":"on"},"oh":{"mode":"on"},"megaminx":{"mode":"on"},"3bld":{"mode":"on"},"4bld":{"mode":"on"},"5bld":{"mode":"on"},"fmc":{"mode":"on"}})
   db=client["comp"]
   collection=db["bans"]
   collection.insert_one({"_id":guild.id,"bans":{}})
   collection=db["mode"]
   collection.insert_one({"_id":guild.id,"mode":"off"})
+  collection=db["records"]
+  eventrecords={}
+  eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld","fmc"]
+  for event in eventlist:
+    eventrecords[event]={"single":"Nobody - None","average":"Nobody - None"}
+    
+  collection.insert_one({"_id":guild.id})
+  collection.update_one({"_id":guild.id},{"$set":eventrecords})
 
 
 @bot.event
@@ -58,7 +66,10 @@ async def on_bot_remove(guild):
   collection=db.bans
   collection.delete_one({"_id":guild.id})
   collection=db["mode"]
-  collection.insert_one({"_id":guild.id})
+  collection.delete_one({"_id":guild.id})
+  collection=db["records"]
+  collection.delete_one({"_id":guild.id})
+
 
 
 
@@ -82,6 +93,6 @@ async def invite(ctx):
   await ctx.send("Use this to invite Midnight Scrambler to your server : https://discord.com/oauth2/authorize?client_id=694632046730936390&permissions=71680&scope=bot")
 
 
-
+keep_alive.keep_alive()
 token=os.environ.get("botsecret")
 bot.run(token)
