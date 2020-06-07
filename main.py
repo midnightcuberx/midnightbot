@@ -4,7 +4,7 @@ import pymongo
 import dns
 import os
 import json
-import keep_alive
+
 
 mongosecret=os.environ.get("mongosecret")
 client = pymongo.MongoClient(mongosecret)
@@ -93,6 +93,6 @@ async def invite(ctx):
   await ctx.send("Use this to invite Midnight Scrambler to your server : https://discord.com/oauth2/authorize?client_id=694632046730936390&permissions=71680&scope=bot")
 
 
-keep_alive.keep_alive()
+
 token=os.environ.get("botsecret")
 bot.run(token)
