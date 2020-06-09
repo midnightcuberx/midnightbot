@@ -8,7 +8,7 @@ class Scrams(commands.Cog):
   def __init__(self,bot):
     self.bot=bot
 
-  @commands.command(aliases=["2x2","2"])
+  '''@commands.command(aliases=["2x2","2"])
   async def two(self,ctx, numofscrambles: int=1):
     if numofscrambles>5:
       numofscrambles=5
@@ -26,7 +26,7 @@ class Scrams(commands.Cog):
     for i in range(numofscrambles):
       a=scrambler333.get_WCA_scramble()
       embed=discord.Embed(title="",description=a,color=0xffff00)
-      await ctx.send(embed=embed)
+      await ctx.send(embed=embed)'''
 
 
   @commands.command(aliases=["3x3 edges"])
@@ -118,7 +118,7 @@ class Scrams(commands.Cog):
       embed=discord.Embed(title="",description=a,color=0xffff00)
       await ctx.send(embed=embed)
 
-  @commands.command(aliases=["4x4","4"])
+  '''@commands.command(aliases=["4x4","4"])
   async def two1(self,ctx, numofscrambles: int=1):
     if numofscrambles>5:
       numofscrambles=5
@@ -275,7 +275,7 @@ class Scrams(commands.Cog):
     for i in range(numofscrambles):
       a=scrambler555.get_5BLD_scramble()
       embed=discord.Embed(title="",description=a,color=0xffff00)
-      await ctx.send(embed=embed)
+      await ctx.send(embed=embed)'''
 
   @commands.command(aliases=["mega"])
   async def megaminx(self,ctx,numofscrambles=1):
