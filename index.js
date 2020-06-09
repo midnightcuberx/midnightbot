@@ -7,6 +7,9 @@ client.commands = new Discord.Collection()
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
+    for (const alias of command.aliases){
+      client.commands.set(alias, command);
+    }
 }
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
