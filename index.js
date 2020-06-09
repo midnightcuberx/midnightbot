@@ -30,6 +30,4 @@ client.on('ready', async() => {
     console.log("Bot is Ready")
 });
 
-const keepAlive = require('./server');
-keepAlive();
 client.login("token")
