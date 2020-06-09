@@ -18,8 +18,7 @@ client.on('message', message => {
 
 try {
     client.commands.get(command).execute(client, message, args);
-} 
-catch (error) {
+} catch (error) {
     message.channel.send(error);
 }
 });
@@ -30,4 +29,4 @@ client.on('ready', async() => {
 
 const keepAlive = require('./server');
 keepAlive();
-client.login(token)
+client.login("token")
