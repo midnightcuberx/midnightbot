@@ -3,7 +3,6 @@ module.exports = {
 	name: '4x4',
   aliases: ['4'],
 	execute(client,message, args) {
-    console.log(args)
     if(args[0]===undefined){
       args[0]=1
     }
@@ -24,6 +23,5 @@ module.exports = {
       }
       message.channel.send(scrambleArr.join("\n"));
     }
-  console.log(scrambleArr)
 	},
 };
