@@ -1,4 +1,4 @@
-const scrambler = require('scrambler-util');
+var megaScrambler = require("./lib/megascramble");
 module.exports = {
 	name: '7x7',
   aliases: ['7'],
@@ -6,20 +6,25 @@ module.exports = {
     if(args[0]===undefined){
       args[0]=1
     }
+    let scrambleArr=[]
+    let scramble=""
     let scramlen=parseInt(args[0])
     if(scramlen>5){
-      scramlen=5
-      let scrambleArr = scrambler("777",scramlen ); 
+      scramlen=5 
       for (i = 0; i < scramlen; i++){
+        scramble=megaScrambler.get777WCAScramble(100)
+        scrambleArr.push(scramble)
         scrambleArr[i]=(i+1)+") "+scrambleArr[i]
       }
       message.channel.send(scrambleArr.join("\n"));
       message.channel.send("5 scrambles is the maximum amount.")
     }
     else{
-      let scrambleArr = scrambler("777",scramlen ); 
       for (i = 0; i < scramlen; i++){
+        scramble=megaScrambler.get777WCAScramble(100)
+        scrambleArr.push(scramble)
         scrambleArr[i]=(i+1)+") "+scrambleArr[i]
+
       }
       message.channel.send(scrambleArr.join("\n"));
     }
