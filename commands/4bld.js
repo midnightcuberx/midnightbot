@@ -1,15 +1,21 @@
-const scrambler = require('scrambler-util');
+const scramble_444 =  require("./lib/scramble_444");
 module.exports = {
-	name: '4bld',
-  aliases: ['4x4bld'],
+	name: '4x4',
+  aliases: ['4'],
 	execute(client,message, args) {
     if(args[0]===undefined){
       args[0]=1
     }
     let scramlen=parseInt(args[0])
+    let scrambleArr=[]
+    let scramble=""
+    for (i = 0; i < scramlen; i++){
+      scramble=scramble_444.getRandomScramble()
+      scrambleArr.push(scramble)
+    }
+
     if(scramlen>5){
-      scramlen=5
-      let scrambleArr = scrambler("444",scramlen,'bld' ); 
+      scramlen=5 
       for (i = 0; i < scramlen; i++){
         scrambleArr[i]=(i+1)+") "+scrambleArr[i]
       }
@@ -17,7 +23,6 @@ module.exports = {
       message.channel.send("5 scrambles is the maximum amount.")
     }
     else{
-      let scrambleArr = scrambler("444",scramlen,'bld' ); 
       for (i = 0; i < scramlen; i++){
         scrambleArr[i]=(i+1)+") "+scrambleArr[i]
       }
