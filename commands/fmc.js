@@ -1,4 +1,5 @@
-const scrambler = require('scrambler-util');
+var scramble_333 = require("./lib/scramble_333_edit");
+var megaScrambler = require("./lib/megascramble")
 module.exports = {
 	name: 'fmc',
   aliases: ['333fm'],
@@ -6,19 +7,23 @@ module.exports = {
     if(args[0]===undefined){
       args[0]=1
     }
+    let scrambleArr = [];
+    let scramble="" 
     let scramlen=parseInt(args[0])
     if(scramlen>12){
       scramlen=12
-      let scrambleArr = scrambler("333",scramlen,'fmc' ); 
       for (i = 0; i < scramlen; i++){
+        scramble=scramble_333.getFMCScramble()
+        scrambleArr.push(scramble)
         scrambleArr[i]=(i+1)+") "+scrambleArr[i]
       }
       message.channel.send(scrambleArr.join("\n"));
       message.channel.send("12 scrambles is the maximum amount.")
     }
     else{
-      let scrambleArr = scrambler("333",scramlen,'fmc' ); 
       for (i = 0; i < scramlen; i++){
+        scramble=scramble_333.getFMCScramble()
+        scrambleArr.push(scramble)
         scrambleArr[i]=(i+1)+") "+scrambleArr[i]
       }
       message.channel.send(scrambleArr.join("\n"));
