@@ -18,6 +18,12 @@ class Comp(commands.Cog):
     coll=db["mode"]
     coll.update_one({"_id":ctx.guild.id},{"$set":{"mode":"off"}})
     await ctx.send("Successfully ended the weekly comp")
+  @end.error
+  async def end_error(self,ctx,error):
+    if isinstance(error,commands.MissingPermissions):
+      await ctx.send("You need manage messages permissions to run this command!")
+    else:
+      raise error
   @commands.command(aliases=["avg"])
   async def avgcalculator(self,ctx,time1,time2,time3,time4=None,time5=None):
     def get_sec(time_str):
@@ -67,6 +73,7 @@ class Comp(commands.Cog):
     print(timelist)
     if len(timelist)==5:
       avg=timelist[1]+timelist[2]+timelist[3]
+
       avg5=avg/3
       avg5=convert(avg5)
       await ctx.send(f"Your average is {avg5}!")
@@ -103,16 +110,12 @@ class Comp(commands.Cog):
           time=f"{minutes}:{secs}"
         return time
     collection=db["records"]
-    results=collection.find({"_id":ctx.guild.id})
-    for result in results:
-      record=result
+    record=collection.find_one({"_id":ctx.guild.id})
     eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld"]
     eventson=[]
     for event in eventlist:
       onoff=db.config
-      results=onoff.find({"_id":ctx.guild.id})
-      for result in results:
-        config=result
+      config=onoff.find_one({"_id":ctx.guild.id})
       if config[event]["mode"]=="on":
         eventson.append(event)
     embed=discord.Embed(title=f"Records for {ctx.guild}",description="",color=0xffff00)
@@ -155,9 +158,7 @@ class Comp(commands.Cog):
     if message.content.upper()=="N":
       await ctx.send("Ok No reset")
       return
-    results=collection.find({"_id":ctx.guild.id})
-    for result in results:
-      comp=result
+    comp=collection.find_one({"_id":ctx.guild.id})
     userlist={}
     for key in comp[event]:
       userlist[key]=comp[event][key]
@@ -187,9 +188,7 @@ class Comp(commands.Cog):
       await ctx.send("There is no active comp in the server! The comps automatically start when you generate scrambles and end when you do podiums!")
       return
     collban=db.bans
-    results=collban.find({"_id":ctx.guild.id})
-    for result in results:
-      ban=result
+    ban=collban.find_one({"_id":ctx.guild.id})
     try:
       userban=ban["bans"][str(ctx.author.id)]
     except KeyError:
@@ -276,9 +275,7 @@ class Comp(commands.Cog):
     eventson=[]
     for item in eventlist:
       onoff=db.config
-      results=onoff.find({"_id":ctx.guild.id})
-      for result in results:
-        config=result
+      config=onoff.find_one({"_id":ctx.guild.id})
       if config[item]["mode"]=="on":
         eventson.append(item)
     
@@ -377,9 +374,7 @@ class Comp(commands.Cog):
       else:
         await ctx.send("Sorry that is not a valid single and/or average!")
         return
-    results=collection.find({"_id":ctx.guild.id})
-    for result in results:
-      comp=result
+    comp=collection.find_one({"_id":ctx.guild.id})
     userlist={}
     for key in comp[event]:
       userlist[key]=comp[event][key]
@@ -405,16 +400,12 @@ class Comp(commands.Cog):
           time=f"{minutes}:{secs}"
         return time
     
-    results=collection.find({"_id":ctx.guild.id})
-    for result in results:
-      comp=result
+    comp=collection.find_one({"_id":ctx.guild.id})
     eventlist=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx","3bld","4bld","5bld"]
     eventson=[]
     for event in eventlist:
       onoff=db.config
-      results=onoff.find({"_id":ctx.guild.id})
-      for result in results:
-        config=result
+      config=onoff.find_one({"_id":ctx.guild.id})
       if config[event]["mode"]=="on":
         eventson.append(event)
     embed=discord.Embed(title=f"Submissions for {ctx.author}",description="",color=0xffff00)
@@ -489,9 +480,7 @@ class Comp(commands.Cog):
     if message.content=="N":
       await ctx.send("Ok No reset")
       return
-    results=collection.find({"_id":ctx.guild.id})
-    for result in results:
-      comp=result
+    comp=collection.find_one({"_id":ctx.guild.id})
     events=["2x2","3x3","4x4","5x5","6x6","7x7","pyraminx","oh","skewb","square-1","clock","megaminx"]
     for event in events:
       lblist={}
@@ -521,9 +510,7 @@ class Comp(commands.Cog):
         bestuser,bestaverage=lb_list[0].split(" : ")
 
         collrecords=db["records"]
-        results=collrecords.find({"_id":ctx.guild.id})
-        for result in results:
-          records=result
+        records=collrecords.find_one({"_id":ctx.guild.id})
 
         person,record=records[event]["average"].split(" - ")
         bestaverage=get_sec(bestaverage)
@@ -562,9 +549,8 @@ class Comp(commands.Cog):
         bestuser,bestsingle=lb_list1[0].split(" : ")
 
         collrecords=db["records"]
-        results=collrecords.find({"_id":ctx.guild.id})
-        for result in results:
-          records=result
+        records=collrecords.find_one({"_id":ctx.guild.id})
+
 
         person,record=records[event]["single"].split(" - ")
         bestsingle=get_sec(bestsingle)
@@ -665,9 +651,7 @@ class Comp(commands.Cog):
         bestuser,bestaverage=lb_list[0].split(" : ")
 
         collrecords=db["records"]
-        results=collrecords.find({"_id":ctx.guild.id})
-        for result in results:
-          records=result
+        records=collrecords.find_one({"_id":ctx.guild.id})
 
         person,record=records[event]["single"].split(" - ")
         bestaverage=get_sec(bestaverage)
@@ -708,9 +692,7 @@ class Comp(commands.Cog):
         bestuser,bestsingle=lb_list1[0].split(" : ")
 
         collrecords=db["records"]
-        results=collrecords.find({"_id":ctx.guild.id})
-        for result in results:
-          records=result
+        records=collrecords.find_one({"_id":ctx.guild.id})
 
         person,record=records[event]["average"].split(" - ")
         try:
